@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const issueSchema = new mongoose.Schema(
   {
     road: { type: mongoose.Schema.Types.ObjectId, ref: "Road", required: true },
@@ -20,8 +19,8 @@ const issueSchema = new mongoose.Schema(
     assignedEngineer: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     fixedAt: Date,
   },
-  { timestamps: true },
+  { timestamps: true }, // adds createdAt and updatedAt
 );
+// fast search for duplicate merging
 issueSchema.index({ road: 1, damageType: 1, status: 1 });
-
-module.exports = mongoose.model("Issue", issueSchema);
+export default mongoose.model("Issue", issueSchema);

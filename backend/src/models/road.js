@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const roadSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -11,21 +11,20 @@ const roadSchema = new mongoose.Schema({
     connectsWards: { type: Boolean, default: false },
   },
   importanceScore: { type: Number, default: 1 }, // 1 to 3
-  location: {
-    lat: Number,
-    lng: Number,
-  },
+  location: { lat: Number, lng: Number },
 });
 
 // calculate importanceScore before saving
-roadSchema.pre("save", function (next) {
+roadSchema.pre("save", function () {
   if (this.roadType === "Main") {
     this.importanceScore = 3;
   } else {
-    const anyChecked = Object.values(this.importance.toObject()).some(Boolean);
+    const { busRoute, nearSchoolHospital, twoPlusLanes, connectsWards } =
+      this.importance;
+    const anyChecked =
+      busRoute || nearSchoolHospital || twoPlusLanes || connectsWards;
     this.importanceScore = anyChecked ? 2 : 1;
   }
-  next();
 });
 
-module.exports = mongoose.model("Road", roadSchema);
+export default mongoose.model("Road", roadSchema);

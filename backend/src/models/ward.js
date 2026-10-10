@@ -1,8 +1,6 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const wardSchema = new mongoose.Schema({
   name: { type: String, required: true },
   number: { type: Number, required: true, unique: true },
 });
-
-module.exports = mongoose.model("Ward", wardSchema);
+export default mongoose.model("Ward", wardSchema);
