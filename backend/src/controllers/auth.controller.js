@@ -1,16 +1,12 @@
 import authServices from "../services/auth.services.js";
 import jwtUtils from "../utils/jwt.js";
 
-const cookieOptions = {
-  maxAge: 86400 * 1000,
-  secure: process.env.NODE_ENV === "production",
-};
 
 const login = async (req, res) => {
   try {
     const data = await authServices.login(req.body);
     const token = jwtUtils.generateToken(data);
-    res.cookie("authToken", token, cookieOptions);
+    res.cookie("authToken", token, {maxAge: 86400 * 1000,});
     res.json(data);
 
       console.log(token);
@@ -24,7 +20,7 @@ const register = async (req, res) => {
   try {
     const data = await authServices.register(req.body);
     const token = jwtUtils.generateToken(data);
-    res.cookie("authToken", token, cookieOptions);
+    res.cookie("authToken", token, {maxAge: 86400 * 1000,});
     res.status(201).json(data);
   } catch (error) {
     res.status(400).json({ message: error.message });

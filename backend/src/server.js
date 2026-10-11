@@ -2,6 +2,8 @@ import express from "express";
 import authRoutes from "./routers/auth.routes.js";
 import config from "./config/config.js";
 import connectDB from "./config/database.js";
+import wardRoutes from "./routers/ward.routes.js";
+import roadRoutes from "./routers/road.routes.js";
 
 connectDB();
 
@@ -12,6 +14,8 @@ app.use(express.json());
 
 
 app.use("/api/auth", authRoutes);
+app.use("/api/wards", wardRoutes);
+app.use("/api/roads", roadRoutes);
 
 
 app.listen(config.port, () => {

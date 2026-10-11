@@ -1,30 +1,15 @@
 import mongoose from "mongoose";
-
-const roadSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  ward: { type: mongoose.Schema.Types.ObjectId, ref: "Ward", required: true },
-  roadType: { type: String, enum: ["Main", "Local"], default: "Local" },
-  importance: {
+const roadSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, trim: true },
+    ward: { type: mongoose.Schema.Types.ObjectId, ref: "Ward", required: true },
+    roadType: { type: String, enum: ["Main", "Local"], default: "Local" },
     busRoute: { type: Boolean, default: false },
-    nearSchoolHospital: { type: Boolean, default: false },
-    twoPlusLanes: { type: Boolean, default: false },
-    connectsWards: { type: Boolean, default: false },
+    nearSchoolOrHospital: { type: Boolean, default: false },
   },
-  importanceScore: { type: Number, default: 1 }, // 1 to 3
-  location: { lat: Number, lng: Number },
-});
-
-// calculate importanceScore before saving
-roadSchema.pre("save", function () {
-  if (this.roadType === "Main") {
-    this.importanceScore = 3;
-  } else {
-    const { busRoute, nearSchoolHospital, twoPlusLanes, connectsWards } =
-      this.importance;
-    const anyChecked =
-      busRoute || nearSchoolHospital || twoPlusLanes || connectsWards;
-    this.importanceScore = anyChecked ? 2 : 1;
-  }
-});
+  { timestamps: true }
+);
+// same road name can't repeat inside one ward
+roadSchema.index({ name: 1, ward: 1 }, { unique: true });
 
 export default mongoose.model("Road", roadSchema);
