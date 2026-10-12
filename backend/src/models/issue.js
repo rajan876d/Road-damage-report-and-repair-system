@@ -1,14 +1,18 @@
 import mongoose from "mongoose";
+
 const issueSchema = new mongoose.Schema(
   {
-    road: { type: mongoose.Schema.Types.ObjectId, ref: "Road", required: true },
     ward: { type: mongoose.Schema.Types.ObjectId, ref: "Ward", required: true },
+    road: { type: mongoose.Schema.Types.ObjectId, ref: "Road", required: true },
     damageType: {
       type: String,
       enum: ["pothole", "crack", "other"],
       required: true,
     },
-    severity: { type: Number, min: 1, max: 3, default: 1 },
+    description: { type: String, default: "" },
+    photo: { type: String, default: "" },
+    location: { lat: Number, lng: Number },
+    reporters: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     reportCount: { type: Number, default: 1 },
     status: {
       type: String,
@@ -16,11 +20,9 @@ const issueSchema = new mongoose.Schema(
       default: "Pending",
     },
     priorityScore: { type: Number, default: 0 },
-    assignedEngineer: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    fixedAt: Date,
+    fixedAt: { type: Date },
   },
-  { timestamps: true }, // adds createdAt and updatedAt
+  { timestamps: true },
 );
-// fast search for duplicate merging
-issueSchema.index({ road: 1, damageType: 1, status: 1 });
+
 export default mongoose.model("Issue", issueSchema);
